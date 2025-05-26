@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soothing Jelly Runner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827;
+            color: #f3f4f6;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+        
+        .jelly {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            bottom: 30px;
+            left: 50px;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+            will-change: transform;
+        }
+        
+        .jelly-body {
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50% 50% 35% 35%;
+            position: relative;
+            overflow: hidden;
+            animation: jellyIdle 2s infinite ease-in-out;
+            backdrop-filter: blur(5px);
+        }
+        
+        .jelly-inner {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50% 50% 35% 35%;
+            filter: blur(3px);
+        }
+        
+        .jelly-shine {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            top: 10px;
+            left: 10px;
+            transform: rotate(25deg);
+            filter: blur(1px);
+        }
+        
+        .jelly-eye {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            top: 15px;
+            z-index: 2;
+        }
+        
+        .jelly-eye.left {
+            left: 12px;
+        }
+        
+        .jelly-eye.right {
+            right: 12px;
+        }
+        
+        .jelly-mouth {
+            position: absolute;
+            width: 16px;
+            height: 6px;
+            background: transparent;
+            border-radius: 0 0 10px 10px;
+            border-bottom: 2px solid #333;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+        
+        .obstacle {
+            position: absolute;
+            bottom: 30px;
+            width: 20px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 6px;
+            backdrop-filter: blur(2px);
+        }
+        
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-top: 1px solid #334155;
+        }
+        
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            filter: blur(2px);
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes jellyIdle {
+            0%, 100% {
+                transform: scale(1) translateY(0);
+            }
+            50% {
+                transform: scale(1.05) translateY(-3px);
+            }
+        }
+        
+        .score-container {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .score {
+            font-size: 18px;
+            color: #f3f4f6;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+        
+        .high-score {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-left: 15px;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 23, 42, 0.9);
+            padding: 25px 35px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            border: 1px solid #334155;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .header-container {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .game-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f3f4f6;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            margin-right: 15px;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.5);
+        }
+        
+        .start-btn:active {
+            transform: translateY(0);
+        }
+        
+        .controls {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #94a3b8;
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            white-space: nowrap;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-4xl w-full">
+        <h1 class="text-3xl font-bold text-center mb-6 text-indigo-400">Jelly Runner</h1>
+        
+        <div class="game-container">
+            <div class="header-container">
+                <div class="game-title">Jelly Runner</div>
+                <button class="start-btn" id="startBtn">Start Game</button>
+            </div>
+            
+            <div class="controls">Press SPACE or TAP to jump</div>
+            
+            <div class="score-container">
+                <div class="score">Score: <span id="scoreValue">0</span></div>
+                <div class="high-score">Best: <span id="highScoreValue">0</span></div>
+            </div>
+            
+            <div class="jelly" id="jelly">
+                <div class="jelly-body" id="jellyBody">
+                    <div class="jelly-inner"></div>
+                    <div class="jelly-shine"></div>
+                    <div class="jelly-eye left"></div>
+                    <div class="jelly-eye right"></div>
+                    <div class="jelly-mouth"></div>
+                </div>
+            </div>
+            
+            <div class="ground"></div>
+            
+            <div class="game-over" id="gameOver">
+                <h2 class="text-xl font-bold mb-2">Game Over</h2>
+                <p class="mb-1">Your score: <span id="finalScore">0</span></p>
+                <p class="mb-4 text-sm text-indigo-300">Best score: <span id="finalHighScore">0</span></p>
+                <button class="btn" id="restartBtn">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameContainer = document.querySelector('.game-container');
+            const jelly = document.getElementById('jelly');
+            const jellyBody = document.getElementById('jellyBody');
+            const scoreElement = document.getElementById('scoreValue');
+            const highScoreElement = document.getElementById('highScoreValue');
+            const finalScoreElement = document.getElementById('finalScore');
+            const finalHighScoreElement = document.getElementById('finalHighScore');
+            const gameOverElement = document.getElementById('gameOver');
+            const restartBtn = document.getElementById('restartBtn');
+            const startBtn = document.getElementById('startBtn');
+            const controls = document.querySelector('.controls');
+            
+            let isJumping = false;
+            let isGameOver = false;
+            let score = 0;
+            let highScore = localStorage.getItem('jellyHighScore') || 0;
+            let gameStarted = false;
+            let obstacleInterval;
+            let scoreInterval;
+            let cloudInterval;
+            let starInterval;
+            let gameSpeed = 1;
+            
+            // Update high score display
+            highScoreElement.textContent = highScore;
+            finalHighScoreElement.textContent = highScore;
+            
+            // Create stars in the background
+            function createStars() {
+                for (let i = 0; i < 30; i++) {
+                    const star = document.createElement('div');
+                    star.classList.add('star');
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 70}%`;
+                    star.style.width = `${Math.random() * 2 + 1}px`;
+                    star.style.height = star.style.width;
+                    star.style.opacity = Math.random() * 0.8 + 0.2;
+                    star.style.animationDelay = `${Math.random() * 4}s`;
+                    gameContainer.appendChild(star);
+                }
+            }
+            
+            // Create stars on load
+            createStars();
+            
+            const colors = [
+                'rgba(255, 105, 180, 0.8)', // Hot pink
+                'rgba(102, 204, 255, 0.8)', // Light blue
+                'rgba(153, 255, 102, 0.8)', // Light green
+                'rgba(255, 153, 102, 0.8)', // Light orange
+                'rgba(204, 153, 255, 0.8)', // Light purple
+                'rgba(255, 255, 102, 0.8)'  // Light yellow
+            ];
+            
+            function getRandomColor() {
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            function createParticles(x, y, color) {
+                for (let i = 0; i < 8; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    particle.style.background = color;
+                    particle.style.left = `${x}px`;
+                    particle.style.top = `${y}px`;
+                    particle.style.opacity = '0.8';
+                    
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 3 + 2;
+                    const size = Math.random() * 4 + 3;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    gameContainer.appendChild(particle);
+                    
+                    // Animate particle
+                    let posX = x;
+                    let posY = y;
+                    let opacity = 0.8;
+                    const gravity = 0.1;
+                    let velocityY = -speed * Math.sin(angle);
+                    const velocityX = speed * Math.cos(angle);
+                    
+                    const particleInterval = setInterval(() => {
+                        if (opacity <= 0) {
+                            clearInterval(particleInterval);
+                            if (particle.parentNode) {
+                                particle.parentNode.removeChild(particle);
+                            }
+                            return;
+                        }
+                        
+                        velocityY += gravity;
+                        posX += velocityX;
+                        posY += velocityY;
+                        opacity -= 0.02;
+                        
+                        particle.style.left = `${posX}px`;
+                        particle.style.top = `${posY}px`;
+                        particle.style.opacity = opacity;
+                    }, 16);
+                }
+            }
+            
+            function jump() {
+                if (isJumping || isGameOver || !gameStarted) return;
+                
+                isJumping = true;
+                
+                // Change jelly color on jump
+                const color = getRandomColor();
+                jellyBody.style.background = color;
+                jellyBody.style.boxShadow = `0 0 15px ${color}`;
+                
+                // Get jelly position for particles
+                const jellyRect = jelly.getBoundingClientRect();
+                const containerRect = gameContainer.getBoundingClientRect();
+                const relativeX = jellyRect.left - containerRect.left + jellyRect.width / 2;
+                const relativeY = jellyRect.bottom - containerRect.top;
+                
+                // Create particles on jump
+                createParticles(relativeX, relativeY, color);
+                
+                // Jump animation with CSS for smoother performance
+                jelly.style.transition = 'transform 0.4s cubic-bezier(0.2, 0, 0.3, 1)';
+                jelly.style.transform = 'translateY(-100px) scaleY(1.2) scaleX(0.9)';
+                
+                // Set timer for coming back down
+                setTimeout(() => {
+                    jelly.style.transition = 'transform 0.3s cubic-bezier(0.5, 0, 0.8, 1)';
+                    jelly.style.transform = 'translateY(0) scaleY(0.8) scaleX(1.1)';
+                    
+                    // Reset jump state and shape after landing
+                    setTimeout(() => {
+                        jelly.style.transition = 'transform 0.2s cubic-bezier(0.5, 0, 0.8, 1)';
+                        jelly.style.transform = 'translateY(0) scaleY(1) scaleX(1)';
+                        setTimeout(() => {
+                            isJumping = false;
+                        }, 100);
+                    }, 300);
+                }, 400);
+            }
+            
+            function createObstacle() {
+                if (isGameOver || !gameStarted) return;
+                
+                const obstacle = document.createElement('div');
+                obstacle.classList.add('obstacle');
+                
+                // Randomize obstacle appearance
+                const height = Math.floor(Math.random() * 20) + 30;
+                const width = Math.floor(Math.random() * 10) + 15;
+                const color = getRandomColor();
+                
+                obstacle.style.height = `${height}px`;
+                obstacle.style.width = `${width}px`;
+                obstacle.style.background = color;
+                obstacle.style.boxShadow = `0 0 15px ${color}`;
+                obstacle.style.right = '-50px';
+                
+                gameContainer.appendChild(obstacle);
+                
+                // Base speed adjusted by game speed
+                const baseSpeed = Math.random() * 1000 + 1500;
+                const speed = baseSpeed / gameSpeed;
+                
+                // Animate obstacle movement with JS for better control
+                let position = -50;
+                const containerWidth = gameContainer.offsetWidth;
+                const moveInterval = setInterval(() => {
+                    if (isGameOver || !gameStarted) {
+                        clearInterval(moveInterval);
+                        if (obstacle.parentNode) {
+                            obstacle.parentNode.removeChild(obstacle);
+                        }
+                        return;
+                    }
+                    
+                    position += (containerWidth + 100) / (speed / 16) * gameSpeed;
+                    obstacle.style.right = position + 'px';
+                    
+                    if (position > containerWidth + 100) {
+                        clearInterval(moveInterval);
+                        if (obstacle.parentNode) {
+                            obstacle.parentNode.removeChild(obstacle);
+                        }
+                    }
+                }, 16);
+                
+                checkCollision(obstacle, moveInterval);
+            }
+            
+            function createCloud() {
+                if (!gameStarted) return;
+                
+                const cloud = document.createElement('div');
+                cloud.classList.add('cloud');
+                
+                // Randomize cloud appearance
+                const width = Math.floor(Math.random() * 60) + 40;
+                const height = width / 2;
+                const top = Math.floor(Math.random() * 60) + 10;
+                const speed = Math.random() * 30000 + 20000; // milliseconds
+                
+                cloud.style.width = `${width}px`;
+                cloud.style.height = `${height}px`;
+                cloud.style.top = `${top}px`;
+                cloud.style.right = '-100px';
+                
+                gameContainer.appendChild(cloud);
+                
+                // Animate cloud with JS
+                let position = -100;
+                const containerWidth = gameContainer.offsetWidth;
+                const moveInterval = setInterval(() => {
+                    if (!gameStarted) {
+                        clearInterval(moveInterval);
+                        if (cloud.parentNode) {
+                            cloud.parentNode.removeChild(cloud);
+                        }
+                        return;
+                    }
+                    
+                    position += (containerWidth + 200) / (speed / 16);
+                    cloud.style.right = position + 'px';
+                    
+                    if (position > containerWidth + 200) {
+                        clearInterval(moveInterval);
+                        if (cloud.parentNode) {
+                            cloud.parentNode.removeChild(cloud);
+                        }
+                    }
+                }, 16);
+            }
+            
+            function checkCollision(obstacle, moveInterval) {
+                if (isGameOver || !gameStarted) return;
+                
+                const collisionCheck = setInterval(() => {
+                    if (isGameOver || !gameStarted || !obstacle.parentNode) {
+                        clearInterval(collisionCheck);
+                        return;
+                    }
+                    
+                    const jellyRect = jelly.getBoundingClientRect();
+                    const obstacleRect = obstacle.getBoundingClientRect();
+                    
+                    // Adjust collision box to be more forgiving
+                    const jellyCollisionBox = {
+                        left: jellyRect.left + 10,
+                        right: jellyRect.right - 10,
+                        top: jellyRect.top + 10,
+                        bottom: jellyRect.bottom - 5
+                    };
+                    
+                    const obstacleCollisionBox = {
+                        left: obstacleRect.left + 2,
+                        right: obstacleRect.right - 2,
+                        top: obstacleRect.top + 2,
+                        bottom: obstacleRect.bottom - 2
+                    };
+                    
+                    // Check if jelly and obstacle are overlapping
+                    if (
+                        jellyCollisionBox.right > obstacleCollisionBox.left &&
+                        jellyCollisionBox.left < obstacleCollisionBox.right &&
+                        jellyCollisionBox.bottom > obstacleCollisionBox.top &&
+                        jellyCollisionBox.top < obstacleCollisionBox.bottom
+                    ) {
+                        gameOver();
+                        clearInterval(collisionCheck);
+                        clearInterval(moveInterval);
+                    }
+                    
+                    // If obstacle passed jelly successfully
+                    if (obstacleRect.right < jellyRect.left && !obstacle.passed) {
+                        obstacle.passed = true;
+                        score += 10;
+                        scoreElement.textContent = score;
+                        
+                        // Increase game speed slightly with each obstacle passed
+                        gameSpeed += 0.01;
+                        if (gameSpeed > 2) gameSpeed = 2; // Cap the speed
+                    }
+                    
+                    // Clean up interval when obstacle is gone
+                    if (!document.body.contains(obstacle)) {
+                        clearInterval(collisionCheck);
+                    }
+                }, 10);
+            }
+            
+            function gameOver() {
+                isGameOver = true;
+                gameStarted = false;
+                
+                clearInterval(obstacleInterval);
+                clearInterval(scoreInterval);
+                clearInterval(cloudInterval);
+                clearInterval(starInterval);
+                
+                // Update high score if needed
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('jellyHighScore', highScore);
+                    highScoreElement.textContent = highScore;
+                }
+                
+                finalScoreElement.textContent = score;
+                finalHighScoreElement.textContent = highScore;
+                gameOverElement.style.display = 'block';
+                
+                // Show start button again
+                startBtn.style.display = 'block';
+                startBtn.textContent = 'Start Game';
+                
+                // Sad jelly
+                jellyBody.style.background = 'rgba(150, 150, 150, 0.7)';
+                jellyBody.style.boxShadow = 'none';
+                
+                // Remove all obstacles
+                document.querySelectorAll('.obstacle').forEach(obs => {
+                    if (obs.parentNode) {
+                        obs.parentNode.removeChild(obs);
+                    }
+                });
+                
+                // Remove all particles
+                document.querySelectorAll('.particle').forEach(particle => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                });
+            }
+            
+            function startGame() {
+                if (gameStarted) return;
+                
+                // Reset game state
+                isGameOver = false;
+                gameStarted = true;
+                score = 0;
+                gameSpeed = 1;
+                scoreElement.textContent = score;
+                gameOverElement.style.display = 'none';
+                
+                // Change start button to "Playing..."
+                startBtn.textContent = "Playing...";
+                
+                // Reset jelly position and color
+                jelly.style.transition = 'none';
+                jelly.style.transform = 'translateY(0) scaleY(1) scaleX(1)';
+                jellyBody.style.background = 'rgba(255, 255, 255, 0.7)';
+                jellyBody.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.3)';
+                
+                // Create obstacles at random intervals
+                obstacleInterval = setInterval(() => {
+                    if (Math.random() > 0.3) { // 70% chance to create obstacle
+                        createObstacle();
+                    }
+                }, 1500);
+                
+                // Create clouds
+                cloudInterval = setInterval(() => {
+                    createCloud();
+                }, Math.random() * 3000 + 2000);
+                
+                // Increment score over time
+                scoreInterval = setInterval(() => {
+                    if (!isGameOver) {
+                        score += 1;
+                        scoreElement.textContent = score;
+                    }
+                }, 1000);
+                
+                // Create initial clouds
+                for (let i = 0; i < 3; i++) {
+                    createCloud();
+                }
+                
+                // Twinkle stars
+                starInterval = setInterval(() => {
+                    document.querySelectorAll('.star').forEach(star => {
+                        if (Math.random() > 0.9) {
+                            star.style.opacity = Math.random() * 0.8 + 0.2;
+                        }
+                    });
+                }, 1000);
+            }
+            
+            // Event listeners
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    if (!gameStarted && !isGameOver) {
+                        startGame();
+                    } else {
+                        jump();
+                    }
+                    e.preventDefault();
+                }
+            });
+            
+            gameContainer.addEventListener('click', (e) => {
+                // Don't trigger jump if clicking on the start button
+                if (e.target === startBtn) return;
+                
+                if (!gameStarted && !isGameOver) {
+                    startGame();
+                } else if (gameStarted) {
+                    jump();
+                }
+            });
+            
+            gameContainer.addEventListener('touchstart', (e) => {
+                // Don't trigger jump if touching the start button
+                if (e.target === startBtn) return;
+                
+                if (!gameStarted && !isGameOver) {
+                    startGame();
+                } else if (gameStarted) {
+                    jump();
+                }
+                e.preventDefault();
+            });
+            
+            restartBtn.addEventListener('click', startGame);
+            startBtn.addEventListener('click', startGame);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'945ea9ed07c44d0e',t:'MTc0ODI3NzA5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
