@@ -112,6 +112,49 @@
             backdrop-filter: blur(2px);
         }
         
+        .mini-jelly {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            bottom: 60px;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+            z-index: 5;
+        }
+        
+        .mini-jelly-body {
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50% 50% 35% 35%;
+            position: relative;
+            overflow: hidden;
+            animation: jellyIdle 2s infinite ease-in-out;
+            backdrop-filter: blur(5px);
+        }
+        
+        .mini-jelly-inner {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50% 50% 35% 35%;
+            filter: blur(2px);
+        }
+        
+        .mini-jelly-shine {
+            position: absolute;
+            width: 10px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+            transform: rotate(25deg);
+            filter: blur(1px);
+        }
+        
         .ground {
             position: absolute;
             bottom: 0;
@@ -151,6 +194,11 @@
             }
         }
         
+        @keyframes jellyCollected {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
         .score-container {
             position: absolute;
             top: 15px;
@@ -171,6 +219,28 @@
             font-size: 14px;
             color: #94a3b8;
             margin-left: 15px;
+        }
+        
+        .jellies-counter {
+            position: absolute;
+            top: 45px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+            font-size: 16px;
+            color: #f3f4f6;
+        }
+        
+        .jellies-counter-icon {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50% 50% 35% 35%;
+            margin-right: 8px;
+            display: inline-block;
+            position: relative;
+            animation: jellyIdle 2s infinite ease-in-out;
         }
         
         .game-over {
@@ -273,9 +343,250 @@
             border-radius: 50%;
             pointer-events: none;
         }
+        
+        .rewards-container {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+            overflow-x: auto;
+            padding: 10px 5px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            cursor: grab;
+        }
+        
+        .rewards-container:active {
+            cursor: grabbing;
+        }
+        
+        /* Hide scrollbar but keep functionality */
+        .rewards-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .rewards-container::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 10px;
+        }
+        
+        .rewards-container::-webkit-scrollbar-thumb {
+            background: rgba(79, 70, 229, 0.5);
+            border-radius: 10px;
+        }
+        
+        .rewards-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 70, 229, 0.7);
+        }
+        
+        .reward-item {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #334155;
+            transition: all 0.2s;
+            cursor: pointer;
+            min-width: 150px;
+            flex: 0 0 auto;
+        }
+        
+        .reward-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: #4f46e5;
+        }
+        
+        .reward-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .reward-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: white;
+        }
+        
+        .reward-cost {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        .reward-cost-icon {
+            width: 16px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50% 50% 35% 35%;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        
+        .reward-locked {
+            opacity: 0.6;
+        }
+        
+        .reward-unlocked {
+            border-color: #4f46e5;
+            background: rgba(79, 70, 229, 0.2);
+        }
+        
+        .reward-active {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+            position: relative;
+        }
+        
+        .reward-active::after {
+            content: "✓";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #10b981;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .theme-preview {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(79, 70, 229, 0.7);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .scroll-indicator.hidden {
+            opacity: 0;
+        }
+        
+        .rewards-wrapper {
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        .special-jelly {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            bottom: 60px;
+            filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.7));
+            z-index: 5;
+        }
+        
+        .special-jelly-body {
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 215, 0, 0.8);
+            border-radius: 50% 50% 35% 35%;
+            position: relative;
+            overflow: hidden;
+            animation: jellyIdle 1.5s infinite ease-in-out;
+            backdrop-filter: blur(5px);
+        }
+        
+        .special-jelly-inner {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            background: rgba(255, 255, 0, 0.5);
+            border-radius: 50% 50% 35% 35%;
+            filter: blur(2px);
+        }
+        
+        .special-jelly-shine {
+            position: absolute;
+            width: 12px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+            transform: rotate(25deg);
+            filter: blur(1px);
+        }
+        
+        .jelly-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            background: rgba(79, 70, 229, 0.7);
+            padding: 2px 6px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .jelly-value.show {
+            opacity: 1;
+        }
+        
+        .jelly-combo {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background: rgba(16, 185, 129, 0.7);
+            padding: 4px 10px;
+            border-radius: 15px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 100;
+        }
+        
+        .jelly-combo.show {
+            opacity: 1;
+            transform: translate(-50%, -10px);
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
     <div class="max-w-4xl w-full">
         <h1 class="text-3xl font-bold text-center mb-6 text-indigo-400">Jelly Runner</h1>
         
@@ -292,6 +603,13 @@
                 <div class="high-score">Best: <span id="highScoreValue">0</span></div>
             </div>
             
+            <div class="jellies-counter">
+                <div class="jellies-counter-icon"></div>
+                <span id="jelliesValue">0</span>
+            </div>
+            
+            <div class="jelly-combo" id="jellyCombo">COMBO x3!</div>
+            
             <div class="jelly" id="jelly">
                 <div class="jelly-body" id="jellyBody">
                     <div class="jelly-inner"></div>
@@ -307,9 +625,25 @@
             <div class="game-over" id="gameOver">
                 <h2 class="text-xl font-bold mb-2">Game Over</h2>
                 <p class="mb-1">Your score: <span id="finalScore">0</span></p>
+                <p class="mb-1">Jellies collected: <span id="finalJellies">0</span></p>
                 <p class="mb-4 text-sm text-indigo-300">Best score: <span id="finalHighScore">0</span></p>
                 <button class="btn" id="restartBtn">Play Again</button>
             </div>
+        </div>
+        
+        <div class="mt-6 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-indigo-300">Rewards Shop</h2>
+            <div class="jellies-counter">
+                <div class="jellies-counter-icon"></div>
+                <span id="totalJelliesValue">0</span> jellies
+            </div>
+        </div>
+        
+        <div class="rewards-wrapper">
+            <div class="rewards-container" id="rewardsContainer">
+                <!-- Rewards will be dynamically added here -->
+            </div>
+            <div class="scroll-indicator" id="scrollIndicator">→</div>
         </div>
     </div>
 
@@ -320,27 +654,153 @@
             const jellyBody = document.getElementById('jellyBody');
             const scoreElement = document.getElementById('scoreValue');
             const highScoreElement = document.getElementById('highScoreValue');
+            const jelliesElement = document.getElementById('jelliesValue');
+            const totalJelliesElement = document.getElementById('totalJelliesValue');
             const finalScoreElement = document.getElementById('finalScore');
+            const finalJelliesElement = document.getElementById('finalJellies');
             const finalHighScoreElement = document.getElementById('finalHighScore');
             const gameOverElement = document.getElementById('gameOver');
             const restartBtn = document.getElementById('restartBtn');
             const startBtn = document.getElementById('startBtn');
             const controls = document.querySelector('.controls');
+            const rewardsContainer = document.getElementById('rewardsContainer');
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const jellyCombo = document.getElementById('jellyCombo');
             
             let isJumping = false;
             let isGameOver = false;
             let score = 0;
+            let jelliesCollected = 0;
+            let totalJellies = localStorage.getItem('totalJellies') ? parseInt(localStorage.getItem('totalJellies')) : 0;
             let highScore = localStorage.getItem('jellyHighScore') || 0;
             let gameStarted = false;
             let obstacleInterval;
+            let miniJellyInterval;
+            let specialJellyInterval;
             let scoreInterval;
             let cloudInterval;
             let starInterval;
             let gameSpeed = 1;
+            let activeTheme = localStorage.getItem('activeTheme') || 'default';
+            let comboCount = 0;
+            let lastJellyTime = 0;
             
-            // Update high score display
+            // Update displays
             highScoreElement.textContent = highScore;
             finalHighScoreElement.textContent = highScore;
+            totalJelliesElement.textContent = totalJellies;
+            
+            // Define available themes
+            const themes = [
+                {
+                    id: 'default',
+                    name: 'Classic',
+                    description: 'The original jelly look',
+                    cost: 0,
+                    colors: {
+                        primary: 'rgba(255, 255, 255, 0.7)',
+                        background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)',
+                        ground: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+                        obstacle: 'rgba(255, 255, 255, 0.4)'
+                    },
+                    preview: 'linear-gradient(90deg, #0f172a, #1e293b)'
+                },
+                {
+                    id: 'neon',
+                    name: 'Neon Glow',
+                    description: 'Vibrant neon colors',
+                    cost: 50,
+                    colors: {
+                        primary: 'rgba(0, 255, 255, 0.7)',
+                        background: 'linear-gradient(180deg, #000000 0%, #1a0033 100%)',
+                        ground: 'linear-gradient(180deg, #1a0033 0%, #000000 100%)',
+                        obstacle: 'rgba(255, 0, 255, 0.6)'
+                    },
+                    preview: 'linear-gradient(90deg, #000000, #1a0033)'
+                },
+                {
+                    id: 'sunset',
+                    name: 'Sunset Vibes',
+                    description: 'Warm sunset colors',
+                    cost: 100,
+                    colors: {
+                        primary: 'rgba(255, 165, 0, 0.7)',
+                        background: 'linear-gradient(180deg, #4b0082 0%, #ff6347 100%)',
+                        ground: 'linear-gradient(180deg, #ff6347 0%, #4b0082 100%)',
+                        obstacle: 'rgba(255, 215, 0, 0.6)'
+                    },
+                    preview: 'linear-gradient(90deg, #4b0082, #ff6347)'
+                },
+                {
+                    id: 'ocean',
+                    name: 'Deep Ocean',
+                    description: 'Calming ocean blues',
+                    cost: 150,
+                    colors: {
+                        primary: 'rgba(135, 206, 250, 0.7)',
+                        background: 'linear-gradient(180deg, #000080 0%, #00008b 100%)',
+                        ground: 'linear-gradient(180deg, #00008b 0%, #000080 100%)',
+                        obstacle: 'rgba(0, 191, 255, 0.6)'
+                    },
+                    preview: 'linear-gradient(90deg, #000080, #00008b)'
+                },
+                {
+                    id: 'forest',
+                    name: 'Enchanted Forest',
+                    description: 'Magical forest theme',
+                    cost: 200,
+                    colors: {
+                        primary: 'rgba(144, 238, 144, 0.7)',
+                        background: 'linear-gradient(180deg, #006400 0%, #228b22 100%)',
+                        ground: 'linear-gradient(180deg, #228b22 0%, #006400 100%)',
+                        obstacle: 'rgba(210, 180, 140, 0.6)'
+                    },
+                    preview: 'linear-gradient(90deg, #006400, #228b22)'
+                },
+                {
+                    id: 'candy',
+                    name: 'Candy Land',
+                    description: 'Sweet candy colors',
+                    cost: 250,
+                    colors: {
+                        primary: 'rgba(255, 182, 193, 0.7)',
+                        background: 'linear-gradient(180deg, #ff69b4 0%, #ffb6c1 100%)',
+                        ground: 'linear-gradient(180deg, #ffb6c1 0%, #ff69b4 100%)',
+                        obstacle: 'rgba(255, 240, 245, 0.6)'
+                    },
+                    preview: 'linear-gradient(90deg, #ff69b4, #ffb6c1)'
+                },
+                {
+                    id: 'galaxy',
+                    name: 'Cosmic Galaxy',
+                    description: 'Space-themed colors',
+                    cost: 300,
+                    colors: {
+                        primary: 'rgba(147, 112, 219, 0.7)',
+                        background: 'linear-gradient(180deg, #000000 0%, #191970 100%)',
+                        ground: 'linear-gradient(180deg, #191970 0%, #000000 100%)',
+                        obstacle: 'rgba(138, 43, 226, 0.6)'
+                    },
+                    preview: 'linear-gradient(90deg, #000000, #191970)'
+                },
+                {
+                    id: 'fire',
+                    name: 'Fire & Flame',
+                    description: 'Hot fiery theme',
+                    cost: 350,
+                    colors: {
+                        primary: 'rgba(255, 69, 0, 0.7)',
+                        background: 'linear-gradient(180deg, #800000 0%, #ff4500 100%)',
+                        ground: 'linear-gradient(180deg, #ff4500 0%, #800000 100%)',
+                        obstacle: 'rgba(255, 215, 0, 0.6)'
+                    },
+                    preview: 'linear-gradient(90deg, #800000, #ff4500)'
+                }
+            ];
+            
+            // Load unlocked themes from localStorage
+            let unlockedThemes = localStorage.getItem('unlockedThemes') ? 
+                JSON.parse(localStorage.getItem('unlockedThemes')) : ['default'];
             
             // Create stars in the background
             function createStars() {
@@ -359,6 +819,132 @@
             
             // Create stars on load
             createStars();
+            
+            // Populate rewards container
+            function populateRewards() {
+                rewardsContainer.innerHTML = '';
+                
+                themes.forEach(theme => {
+                    const isUnlocked = unlockedThemes.includes(theme.id);
+                    const isActive = activeTheme === theme.id;
+                    
+                    const rewardItem = document.createElement('div');
+                    rewardItem.classList.add('reward-item');
+                    
+                    if (isUnlocked) {
+                        rewardItem.classList.add('reward-unlocked');
+                    } else {
+                        rewardItem.classList.add('reward-locked');
+                    }
+                    
+                    if (isActive) {
+                        rewardItem.classList.add('reward-active');
+                    }
+                    
+                    const themePreview = document.createElement('div');
+                    themePreview.classList.add('theme-preview');
+                    themePreview.style.background = theme.preview;
+                    
+                    const rewardTitle = document.createElement('div');
+                    rewardTitle.classList.add('reward-title');
+                    rewardTitle.textContent = theme.name;
+                    
+                    const rewardDesc = document.createElement('div');
+                    rewardDesc.classList.add('text-xs', 'text-gray-300', 'mb-2');
+                    rewardDesc.textContent = theme.description;
+                    
+                    const rewardCost = document.createElement('div');
+                    rewardCost.classList.add('reward-cost');
+                    
+                    if (isUnlocked) {
+                        if (isActive) {
+                            rewardCost.textContent = 'Active';
+                        } else {
+                            rewardCost.textContent = 'Apply';
+                            rewardCost.style.color = '#4f46e5';
+                        }
+                    } else {
+                        const costIcon = document.createElement('div');
+                        costIcon.classList.add('reward-cost-icon');
+                        
+                        const costText = document.createElement('span');
+                        costText.textContent = theme.cost;
+                        
+                        rewardCost.appendChild(costIcon);
+                        rewardCost.appendChild(costText);
+                    }
+                    
+                    rewardItem.appendChild(themePreview);
+                    rewardItem.appendChild(rewardTitle);
+                    rewardItem.appendChild(rewardDesc);
+                    rewardItem.appendChild(rewardCost);
+                    
+                    // Add click event
+                    rewardItem.addEventListener('click', () => {
+                        if (isUnlocked) {
+                            // Apply theme
+                            applyTheme(theme.id);
+                        } else {
+                            // Try to purchase
+                            purchaseTheme(theme);
+                        }
+                    });
+                    
+                    rewardsContainer.appendChild(rewardItem);
+                });
+                
+                // Check if scroll indicator should be shown
+                checkScrollIndicator();
+            }
+            
+            // Apply theme function
+            function applyTheme(themeId) {
+                const theme = themes.find(t => t.id === themeId);
+                if (!theme) return;
+                
+                // Apply theme colors
+                gameContainer.style.background = theme.colors.background;
+                document.querySelector('.ground').style.background = theme.colors.ground;
+                
+                // Update jelly color
+                jellyBody.style.background = theme.colors.primary;
+                
+                // Save active theme
+                activeTheme = themeId;
+                localStorage.setItem('activeTheme', activeTheme);
+                
+                // Refresh rewards display
+                populateRewards();
+            }
+            
+            // Purchase theme function
+            function purchaseTheme(theme) {
+                if (totalJellies >= theme.cost) {
+                    // Deduct jellies
+                    totalJellies -= theme.cost;
+                    localStorage.setItem('totalJellies', totalJellies);
+                    totalJelliesElement.textContent = totalJellies;
+                    
+                    // Add to unlocked themes
+                    unlockedThemes.push(theme.id);
+                    localStorage.setItem('unlockedThemes', JSON.stringify(unlockedThemes));
+                    
+                    // Apply the theme
+                    applyTheme(theme.id);
+                    
+                    // Show success message
+                    alert(`You've unlocked the ${theme.name} theme!`);
+                } else {
+                    // Show insufficient funds message
+                    alert(`You need ${theme.cost - totalJellies} more jellies to unlock this theme.`);
+                }
+            }
+            
+            // Initialize rewards
+            populateRewards();
+            
+            // Apply active theme on load
+            applyTheme(activeTheme);
             
             const colors = [
                 'rgba(255, 105, 180, 0.8)', // Hot pink
@@ -465,10 +1051,13 @@
                 const obstacle = document.createElement('div');
                 obstacle.classList.add('obstacle');
                 
+                // Get theme colors for obstacles
+                const theme = themes.find(t => t.id === activeTheme);
+                
                 // Randomize obstacle appearance
                 const height = Math.floor(Math.random() * 20) + 30;
                 const width = Math.floor(Math.random() * 10) + 15;
-                const color = getRandomColor();
+                const color = theme ? theme.colors.obstacle : getRandomColor();
                 
                 obstacle.style.height = `${height}px`;
                 obstacle.style.width = `${width}px`;
@@ -506,6 +1095,233 @@
                 }, 16);
                 
                 checkCollision(obstacle, moveInterval);
+            }
+            
+            function createMiniJelly() {
+                if (isGameOver || !gameStarted) return;
+                
+                const miniJelly = document.createElement('div');
+                miniJelly.classList.add('mini-jelly');
+                miniJelly.dataset.value = 1; // Regular jellies worth 1
+                
+                // Get theme colors
+                const theme = themes.find(t => t.id === activeTheme);
+                const color = theme ? theme.colors.primary : 'rgba(255, 255, 255, 0.7)';
+                
+                // Create mini jelly structure
+                const miniJellyBody = document.createElement('div');
+                miniJellyBody.classList.add('mini-jelly-body');
+                miniJellyBody.style.background = color;
+                
+                const miniJellyInner = document.createElement('div');
+                miniJellyInner.classList.add('mini-jelly-inner');
+                
+                const miniJellyShine = document.createElement('div');
+                miniJellyShine.classList.add('mini-jelly-shine');
+                
+                // Add value indicator
+                const jellyValue = document.createElement('div');
+                jellyValue.classList.add('jelly-value');
+                jellyValue.textContent = '+1';
+                
+                miniJellyBody.appendChild(miniJellyInner);
+                miniJellyBody.appendChild(miniJellyShine);
+                miniJelly.appendChild(miniJellyBody);
+                miniJelly.appendChild(jellyValue);
+                
+                // Position randomly
+                const height = Math.floor(Math.random() * 40) + 40; // Random height between 40-80px
+                miniJelly.style.bottom = `${height}px`;
+                miniJelly.style.right = '-50px';
+                
+                gameContainer.appendChild(miniJelly);
+                
+                // Base speed adjusted by game speed
+                const baseSpeed = Math.random() * 1000 + 2000;
+                const speed = baseSpeed / gameSpeed;
+                
+                // Animate mini jelly movement
+                let position = -50;
+                const containerWidth = gameContainer.offsetWidth;
+                const moveInterval = setInterval(() => {
+                    if (isGameOver || !gameStarted) {
+                        clearInterval(moveInterval);
+                        if (miniJelly.parentNode) {
+                            miniJelly.parentNode.removeChild(miniJelly);
+                        }
+                        return;
+                    }
+                    
+                    position += (containerWidth + 100) / (speed / 16) * gameSpeed;
+                    miniJelly.style.right = position + 'px';
+                    
+                    if (position > containerWidth + 100) {
+                        clearInterval(moveInterval);
+                        if (miniJelly.parentNode) {
+                            miniJelly.parentNode.removeChild(miniJelly);
+                        }
+                    }
+                }, 16);
+                
+                checkJellyCollection(miniJelly, moveInterval);
+            }
+            
+            function createSpecialJelly() {
+                if (isGameOver || !gameStarted) return;
+                
+                const specialJelly = document.createElement('div');
+                specialJelly.classList.add('special-jelly');
+                specialJelly.dataset.value = 5; // Special jellies worth 5
+                
+                // Create special jelly structure
+                const specialJellyBody = document.createElement('div');
+                specialJellyBody.classList.add('special-jelly-body');
+                
+                const specialJellyInner = document.createElement('div');
+                specialJellyInner.classList.add('special-jelly-inner');
+                
+                const specialJellyShine = document.createElement('div');
+                specialJellyShine.classList.add('special-jelly-shine');
+                
+                // Add value indicator
+                const jellyValue = document.createElement('div');
+                jellyValue.classList.add('jelly-value');
+                jellyValue.textContent = '+5';
+                jellyValue.style.background = 'rgba(255, 215, 0, 0.7)';
+                
+                specialJellyBody.appendChild(specialJellyInner);
+                specialJellyBody.appendChild(specialJellyShine);
+                specialJelly.appendChild(specialJellyBody);
+                specialJelly.appendChild(jellyValue);
+                
+                // Position randomly
+                const height = Math.floor(Math.random() * 40) + 40;
+                specialJelly.style.bottom = `${height}px`;
+                specialJelly.style.right = '-50px';
+                
+                gameContainer.appendChild(specialJelly);
+                
+                // Base speed adjusted by game speed
+                const baseSpeed = Math.random() * 1000 + 2000;
+                const speed = baseSpeed / gameSpeed;
+                
+                // Animate special jelly movement
+                let position = -50;
+                const containerWidth = gameContainer.offsetWidth;
+                const moveInterval = setInterval(() => {
+                    if (isGameOver || !gameStarted) {
+                        clearInterval(moveInterval);
+                        if (specialJelly.parentNode) {
+                            specialJelly.parentNode.removeChild(specialJelly);
+                        }
+                        return;
+                    }
+                    
+                    position += (containerWidth + 100) / (speed / 16) * gameSpeed;
+                    specialJelly.style.right = position + 'px';
+                    
+                    if (position > containerWidth + 100) {
+                        clearInterval(moveInterval);
+                        if (specialJelly.parentNode) {
+                            specialJelly.parentNode.removeChild(specialJelly);
+                        }
+                    }
+                }, 16);
+                
+                checkJellyCollection(specialJelly, moveInterval);
+            }
+            
+            function checkJellyCollection(jellyElement, moveInterval) {
+                if (isGameOver || !gameStarted) return;
+                
+                const collectionCheck = setInterval(() => {
+                    if (isGameOver || !gameStarted || !jellyElement.parentNode) {
+                        clearInterval(collectionCheck);
+                        return;
+                    }
+                    
+                    const jellyRect = jelly.getBoundingClientRect();
+                    const collectibleRect = jellyElement.getBoundingClientRect();
+                    
+                    // Check if jelly and collectible are overlapping
+                    if (
+                        jellyRect.right > collectibleRect.left &&
+                        jellyRect.left < collectibleRect.right &&
+                        jellyRect.bottom > collectibleRect.top &&
+                        jellyRect.top < collectibleRect.bottom
+                    ) {
+                        // Collect the jelly
+                        collectJelly(jellyElement);
+                        clearInterval(collectionCheck);
+                        clearInterval(moveInterval);
+                    }
+                    
+                    // Clean up interval when collectible is gone
+                    if (!document.body.contains(jellyElement)) {
+                        clearInterval(collectionCheck);
+                    }
+                }, 10);
+            }
+            
+            function collectJelly(jellyElement) {
+                // Get jelly value
+                const jellyValue = parseInt(jellyElement.dataset.value) || 1;
+                
+                // Show value indicator
+                const valueIndicator = jellyElement.querySelector('.jelly-value');
+                if (valueIndicator) {
+                    valueIndicator.classList.add('show');
+                }
+                
+                // Check for combo
+                const now = Date.now();
+                if (now - lastJellyTime < 1500) { // If collected within 1.5 seconds of last jelly
+                    comboCount++;
+                    if (comboCount >= 3) {
+                        // Show combo message
+                        jellyCombo.textContent = `COMBO x${comboCount}!`;
+                        jellyCombo.classList.add('show');
+                        
+                        // Hide combo message after a delay
+                        setTimeout(() => {
+                            jellyCombo.classList.remove('show');
+                        }, 1500);
+                        
+                        // Add bonus jellies for combo
+                        const bonusJellies = Math.min(comboCount, 5); // Cap bonus at 5
+                        jelliesCollected += bonusJellies;
+                        
+                        // Create bonus indicator
+                        const bonusIndicator = document.createElement('div');
+                        bonusIndicator.classList.add('jelly-value', 'show');
+                        bonusIndicator.textContent = `+${bonusJellies} BONUS!`;
+                        bonusIndicator.style.background = 'rgba(16, 185, 129, 0.7)';
+                        bonusIndicator.style.top = '-40px';
+                        jellyElement.appendChild(bonusIndicator);
+                    }
+                } else {
+                    comboCount = 1;
+                }
+                
+                lastJellyTime = now;
+                
+                // Animate collection
+                jellyElement.style.animation = 'jellyCollected 0.3s forwards';
+                
+                // Increment jellies count
+                jelliesCollected += jellyValue;
+                jelliesElement.textContent = jelliesCollected;
+                
+                // Add score bonus for collecting jellies
+                score += jellyValue * 5;
+                scoreElement.textContent = score;
+                
+                // Remove jelly after animation
+                setTimeout(() => {
+                    if (jellyElement.parentNode) {
+                        jellyElement.parentNode.removeChild(jellyElement);
+                    }
+                }, 300);
             }
             
             function createCloud() {
@@ -613,6 +1429,8 @@
                 gameStarted = false;
                 
                 clearInterval(obstacleInterval);
+                clearInterval(miniJellyInterval);
+                clearInterval(specialJellyInterval);
                 clearInterval(scoreInterval);
                 clearInterval(cloudInterval);
                 clearInterval(starInterval);
@@ -624,7 +1442,13 @@
                     highScoreElement.textContent = highScore;
                 }
                 
+                // Update total jellies
+                totalJellies += jelliesCollected;
+                localStorage.setItem('totalJellies', totalJellies);
+                totalJelliesElement.textContent = totalJellies;
+                
                 finalScoreElement.textContent = score;
+                finalJelliesElement.textContent = jelliesCollected;
                 finalHighScoreElement.textContent = highScore;
                 gameOverElement.style.display = 'block';
                 
@@ -636,10 +1460,10 @@
                 jellyBody.style.background = 'rgba(150, 150, 150, 0.7)';
                 jellyBody.style.boxShadow = 'none';
                 
-                // Remove all obstacles
-                document.querySelectorAll('.obstacle').forEach(obs => {
-                    if (obs.parentNode) {
-                        obs.parentNode.removeChild(obs);
+                // Remove all obstacles and mini jellies
+                document.querySelectorAll('.obstacle, .mini-jelly, .special-jelly').forEach(element => {
+                    if (element.parentNode) {
+                        element.parentNode.removeChild(element);
                     }
                 });
                 
@@ -658,9 +1482,14 @@
                 isGameOver = false;
                 gameStarted = true;
                 score = 0;
+                jelliesCollected = 0;
                 gameSpeed = 1;
+                comboCount = 0;
+                lastJellyTime = 0;
                 scoreElement.textContent = score;
+                jelliesElement.textContent = jelliesCollected;
                 gameOverElement.style.display = 'none';
+                jellyCombo.classList.remove('show');
                 
                 // Change start button to "Playing..."
                 startBtn.textContent = "Playing...";
@@ -668,8 +1497,16 @@
                 // Reset jelly position and color
                 jelly.style.transition = 'none';
                 jelly.style.transform = 'translateY(0) scaleY(1) scaleX(1)';
-                jellyBody.style.background = 'rgba(255, 255, 255, 0.7)';
-                jellyBody.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.3)';
+                
+                // Apply theme colors
+                const theme = themes.find(t => t.id === activeTheme);
+                if (theme) {
+                    jellyBody.style.background = theme.colors.primary;
+                    jellyBody.style.boxShadow = `0 0 15px ${theme.colors.primary}`;
+                } else {
+                    jellyBody.style.background = 'rgba(255, 255, 255, 0.7)';
+                    jellyBody.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.3)';
+                }
                 
                 // Create obstacles at random intervals
                 obstacleInterval = setInterval(() => {
@@ -677,6 +1514,20 @@
                         createObstacle();
                     }
                 }, 1500);
+                
+                // Create mini jellies at random intervals - MORE FREQUENT NOW
+                miniJellyInterval = setInterval(() => {
+                    if (Math.random() > 0.4) { // 60% chance to create mini jelly (up from 40%)
+                        createMiniJelly();
+                    }
+                }, 1000); // Reduced from 2000ms to 1000ms
+                
+                // Create special jellies occasionally
+                specialJellyInterval = setInterval(() => {
+                    if (Math.random() > 0.7) { // 30% chance to create special jelly
+                        createSpecialJelly();
+                    }
+                }, 3000);
                 
                 // Create clouds
                 cloudInterval = setInterval(() => {
@@ -704,9 +1555,105 @@
                         }
                     });
                 }, 1000);
+                
+                // Create initial jellies to collect right away
+                setTimeout(() => {
+                    createMiniJelly();
+                    setTimeout(() => {
+                        createMiniJelly();
+                    }, 500);
+                }, 1000);
             }
             
-            // Event listeners
+            // Check if scroll indicator should be shown
+            function checkScrollIndicator() {
+                if (rewardsContainer.scrollWidth > rewardsContainer.clientWidth) {
+                    scrollIndicator.classList.remove('hidden');
+                } else {
+                    scrollIndicator.classList.add('hidden');
+                }
+            }
+            
+            // Implement touch/mouse drag scrolling for rewards container
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            
+            rewardsContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                rewardsContainer.style.cursor = 'grabbing';
+                startX = e.pageX - rewardsContainer.offsetLeft;
+                scrollLeft = rewardsContainer.scrollLeft;
+                
+                // Prevent default behavior to avoid text selection
+                e.preventDefault();
+            });
+            
+            rewardsContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+                rewardsContainer.style.cursor = 'grab';
+            });
+            
+            rewardsContainer.addEventListener('mouseup', () => {
+                isDown = false;
+                rewardsContainer.style.cursor = 'grab';
+            });
+            
+            rewardsContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - rewardsContainer.offsetLeft;
+                const walk = (x - startX) * 2; // Scroll speed multiplier
+                rewardsContainer.scrollLeft = scrollLeft - walk;
+                
+                // Hide scroll indicator after user starts scrolling
+                if (Math.abs(walk) > 10) {
+                    scrollIndicator.classList.add('hidden');
+                }
+            });
+            
+            // Touch events for mobile
+            rewardsContainer.addEventListener('touchstart', (e) => {
+                isDown = true;
+                startX = e.touches[0].pageX - rewardsContainer.offsetLeft;
+                scrollLeft = rewardsContainer.scrollLeft;
+            });
+            
+            rewardsContainer.addEventListener('touchend', () => {
+                isDown = false;
+            });
+            
+            rewardsContainer.addEventListener('touchcancel', () => {
+                isDown = false;
+            });
+            
+            rewardsContainer.addEventListener('touchmove', (e) => {
+                if (!isDown) return;
+                const x = e.touches[0].pageX - rewardsContainer.offsetLeft;
+                const walk = (x - startX) * 2;
+                rewardsContainer.scrollLeft = scrollLeft - walk;
+                
+                // Hide scroll indicator after user starts scrolling
+                if (Math.abs(walk) > 10) {
+                    scrollIndicator.classList.add('hidden');
+                }
+                
+                // Prevent page scrolling when scrolling the rewards
+                e.preventDefault();
+            });
+            
+            // Hide scroll indicator after scrolling
+            rewardsContainer.addEventListener('scroll', () => {
+                // If user has scrolled significantly, hide the indicator
+                if (rewardsContainer.scrollLeft > 50) {
+                    scrollIndicator.classList.add('hidden');
+                }
+            });
+            
+            // Check for scroll indicator on window resize
+            window.addEventListener('resize', checkScrollIndicator);
+            
+            // Event listeners for game
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space') {
                     if (!gameStarted && !isGameOver) {
@@ -745,5 +1692,5 @@
             startBtn.addEventListener('click', startGame);
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'945ea9ed07c44d0e',t:'MTc0ODI3NzA5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'945ec644d47c4ce4',t:'MTc0ODI3ODI1Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
